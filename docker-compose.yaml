@@ -1,3 +1,5 @@
+version: "3.7"
+
 services:
   redis:
     container_name: redis
@@ -20,13 +22,13 @@ services:
     restart: unless-stopped
     networks:
       - searxng
-    ports:
-      - "8888:8888"  # You can remove this if only using Traefik
     volumes:
       - ./searxng:/etc/searxng:rw
       - searxng-data:/var/cache/searxng:rw
     environment:
-      - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME:-localhost}/
+      - SEARXNG_BASE_URL=https://${SEARXNG_HOSTNAME}/
+      - SEARXNG_HOSTNAME=${SEARXNG_HOSTNAME}
+      - SEARXNG_SECRET_KEY=${SEARXNG_SECRET_KEY}
     logging:
       driver: "json-file"
       options:
@@ -34,7 +36,7 @@ services:
         max-file: "1"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.searxng.rule=Host(`${SEARXNG_HOSTNAME:-localhost}`)"
+      - "traefik.http.routers.searxng.rule=Host(`${SEARXNG_HOSTNAME}`)"
       - "traefik.http.routers.searxng.entrypoints=websecure"
       - "traefik.http.services.searxng.loadbalancer.server.port=8888"
 
