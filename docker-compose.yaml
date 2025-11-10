@@ -22,9 +22,9 @@ services:
     restart: unless-stopped
     networks:
       - searxng
-    # Map 8080 for local debugging, optional with Traefik
-    ports:
-      - "8080:8080"
+    # REMOVE or COMMENT OUT THE LINE BELOW to avoid port conflict:
+    # ports:
+    #   - "8080:8080"
     volumes:
       - ./searxng:/etc/searxng:rw
       - searxng-data:/var/cache/searxng:rw
@@ -42,7 +42,6 @@ services:
       - "traefik.http.routers.searxng.rule=Host(`${SEARXNG_HOSTNAME}`)"
       - "traefik.http.routers.searxng.entrypoints=websecure"
       - "traefik.http.services.searxng.loadbalancer.server.port=8080"
-
 networks:
   searxng:
 
